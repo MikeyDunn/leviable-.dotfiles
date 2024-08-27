@@ -53,11 +53,11 @@ function backup() {
 
 # ###############################
 #
-# Homebrew
+# Enable Sudo
 #
 # ###############################
 
-echo "Enabling sudo"
+echo "Grand sudo access"
 sudo ls &>/dev/null
 
 # ###############################
@@ -340,3 +340,56 @@ program="neovim" install neovim
 [[ ! -f $HOME/.config/nvim/init.vim ]] || backup "$HOME"/.config/nvim/init.vim
 mkdir -p "$HOME"/.config/nvim
 stow -d "$STOWED" -t "$HOME"/.config/nvim neovim
+
+# ###############################
+#
+# Warp
+#
+# ###############################
+
+program="warp" install warp
+
+# ###############################
+#
+# Starship
+#
+# ###############################
+
+program="starship"
+checking
+if command -v starship &>/dev/null; then
+  installed
+else
+  installing
+  {
+    mkdir -p $HOME/.local/bin
+    curl -sS https://starship.rs/install.sh | sh /dev/stdin -y -b $HOME/.local/bin >>"$INSTALL_LOG" 2>&1 &&
+      installed
+  } || { failed; }
+fi
+
+# ###############################
+#
+# Nerd Fonts
+#
+# ###############################
+
+program="Nerd Fonts"
+if darwin; then
+  font_dir="$HOME/Library/Fonts"
+else
+  font_dir="$HOME/.local/share/fonts"
+  mkdir -p "$font_dir"
+fi
+
+if ls "$font_dir/FiraCode*" &>/dev/null; then
+  installed
+else
+  installing
+  {
+    curl -s -L https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.tar.xz | tar xz - -C $font_dir &&
+      installed
+  } || {
+    failed
+  }
+fi
