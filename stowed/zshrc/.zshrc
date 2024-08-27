@@ -88,7 +88,6 @@ source $HOME/.zshrc-git
 source $HOME/.zshrc-go
 source $HOME/.zshrc-kubernetes
 source $HOME/.zshrc-misc
-source $HOME/.zshrc-noso
 source $HOME/.zshrc-python
 source $HOME/.zshrc-rust
 source $HOME/.zshrc-services

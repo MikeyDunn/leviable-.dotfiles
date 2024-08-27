@@ -49,3 +49,13 @@ function cb() {
 }
 
 alias treers='tree -P "*.rs"'
+
+function cn {
+    if [[ "$1" == "" ]] || [[ "$2" == "" ]]; then
+        echo "Must be of form 'cn <section number> <section title>"
+        return 1
+    fi
+
+    cargo new "$1-$2" --name $2 --vcs none
+
+}

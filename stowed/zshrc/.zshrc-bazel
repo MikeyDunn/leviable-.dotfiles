@@ -1,0 +1,2 @@
+alias bazel-repin="CARGO_BAZEL_REPIN=1 bazel sync --only=crate_index"
+alias repin="CARGO_BAZEL_REPIN=1 bazel sync --only=p21-embedded"

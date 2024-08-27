@@ -11,9 +11,6 @@ function _accept-line() {
 }
 zle -N accept-line _accept-line
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 # Source relevant zsh dotfiles
 if [ -f "$HOME/.zshrc-tokens" ]; then
 	source $HOME/.zshrc-tokens
