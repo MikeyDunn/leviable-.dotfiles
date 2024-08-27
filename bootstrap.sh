@@ -329,7 +329,6 @@ fi
 #   for vim-go to work correctly
 program="VIM" install vim
 [[ ! -f $HOME/.vimrc ]] || backup "$HOME"/.vimrc
-stow -d "$STOWED" -t "$HOME" vim
 
 # ###############################
 #
@@ -341,50 +340,3 @@ program="neovim" install neovim
 [[ ! -f $HOME/.config/nvim/init.vim ]] || backup "$HOME"/.config/nvim/init.vim
 mkdir -p "$HOME"/.config/nvim
 stow -d "$STOWED" -t "$HOME"/.config/nvim neovim
-
-# ###############################
-#
-# VIM Plug
-#
-# ###############################
-
-# program="VIM Plug"
-# LOCATION="${XDG_DATA_HOME:-$HOME/.local/share}/nvim/site/autoload/plug.vim"
-# checking
-# if [ ! -f "$LOCATION" ]; then
-#   installing
-#   {
-#     curl -fLo "$LOCATION" --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim >>"$INSTALL_LOG" 2>&1 &&
-#       installed
-#   } || { failed; }
-# else
-#   installed
-# fi
-#
-# [[ ! -f $HOME/.zshrc ]] || backup "$HOME"/.zshrc
-# stow -d "$STOWED" -t "$HOME" zshrc
-
-# ###############################
-#
-# VIM PlugIns
-#
-# ###############################
-
-# vim +PlugInstall +qall
-
-# ###############################
-#
-# VIM Go Binaries
-#
-# ###############################
-
-# vim +GoInstallBinaries +qall
-
-# ###############################
-#
-# DigitalOcean doctl
-#
-# ###############################
-
-# cd ~
-# wget https://github.com/digitalocean/doctl/releases/download/v1.66.0/doctl-1.66.0-linux-amd64.tar.gz
