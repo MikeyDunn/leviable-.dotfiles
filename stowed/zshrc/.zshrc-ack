@@ -1,0 +1,4 @@
+alias ack='ack --color'
+alias ackpy='ack --ignore-dir=".venv" --ignore-dir=".tox" --ignore-dir="build" --type="python"'
+alias ackr='ack --type rust'
+

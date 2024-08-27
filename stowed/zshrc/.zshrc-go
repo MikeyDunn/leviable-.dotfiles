@@ -1,0 +1,28 @@
+if [ -d "$HOME/.gvm" ]; then
+        export GVM_ROOT=/$HOME/.gvm
+        . $GVM_ROOT/scripts/gvm-default
+fi
+
+alias ackgo='ack --ignore-dir="vendor" --type="go"'
+
+# TODO: make this a shell script that runs in a loop, but
+#       can intercept ctrl+c to exit
+# alias gt="ls -1 **/*.go | \
+#     entr -c richgo test -v -race -timeout 20s ./..."
+alias rt="richgo test -v"
+alias cdg="cd $GOPATH/src"
+alias cdgl="cd $GOPATH/src/github.com/leviable"
+alias cdgt="cd $GOPATH/src/gitlab.toyotaconnected.net/tcna-labs"
+export GO111MODULE=auto
+export GOFLAGS=-mod=vendor
+export GOPRIVATE=gitlab.toyotaconnected.net/*
+
+# Copied from old .zshrc, might be old/removable
+export GOPATH=$HOME/go
+export GOBIN=$GOPATH/bin
+export PATH=$PATH:$GOBIN
+
+function gt() {
+    # TODO: Also retrigger if a new *.go file is added or one is removed
+    ls -1 **/*.go | entr -c richgo test -v -race -timeout 5s ./... $1 $2
+}

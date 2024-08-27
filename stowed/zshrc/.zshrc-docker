@@ -1,0 +1,46 @@
+# Docker stuff
+alias drm='docker rm -v $(docker ps -aq -f status=exited)'
+alias drmi='docker rmi $(docker images -qf "dangling=true")'
+alias dc='docker-compose'
+alias di='docker images'
+alias dp='docker ps'
+alias dpa='docker ps -a'
+alias dps="docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.RunningFor}}\t{{.Status}}'"
+alias dpss="docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Ports}}'"
+alias dss="docker stats --format 'table {{.Container}}\t{{.Name}}\t{{.CPUPerc}}\t{{.MemPerc}}'"
+alias dsp='docker system prune -f'
+alias dv='docker volume ls'
+alias dockernames="docker ps --format 'table {{.Names}}'"
+export PATH=/usr/bin:$PATH
+# export DOCKER_HOST=unix:///run/user/1000/docker.sock
+export DOCKER_BUILDKIT=1
+printf '\eP$f{"hook": "SourcedRcFileForWarp", "value": { "shell": "bash" }}\x9c'
+
+
+# NOTE: This is a rabbit hole I don't really care much about
+#       What I wanted was a relatively clean `docker ps` output, filtered to 
+#       include the exposed ports but formatted so it is short-ish and on 
+#       the same line or stacked on top of each other. Maybe remove `0.0.0.0:` 
+#       entirely?
+#
+# alias dpfoo='dports'
+# dports() {
+#   #TODO: How I want this to work
+#   # - Skip Header
+#   # - Print all fields as normal except Ports
+#   # - Print first port pair
+#   # - For each subsequent port pair, print the pair on a new line, but tabbed apprpriately
+#
+#   # echo FOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO
+#   docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Ports}}\t{{.RunningFor}}' | 
+#     awk '{print $5}'
+# }
+#
+# dpss() {
+#     docker ps --format 'table {{.ID}}\t{{.Names}}\t{{.Ports}}' |
+#       awk '
+#       {
+#         for (i = 1; i <= 3; i++)
+#           print $i
+#       }'
+# }

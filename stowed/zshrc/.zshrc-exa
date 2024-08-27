@@ -1,0 +1,4 @@
+if command -v eza &> /dev/null ; then
+  export EXA_COLORS="*.py=38;5;125"
+  alias ls="eza"
+fi

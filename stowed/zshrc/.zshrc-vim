@@ -1,0 +1,6 @@
+alias vim="nvim"
+alias vi="nvim"
+
+# Here, with vim, ignore .(aux|log|pdf) files
+# zstyle ':completion:*:*:vim:*' file-patterns '^*.(aux|log|pdf):source-files' '*:all-files'
+# zstyle ':completion:*:*:vim:*' file-patterns '^*.(o):source-files' '*:all-files'

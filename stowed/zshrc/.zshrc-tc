@@ -1,0 +1,112 @@
+# Switch k8s context to specific cluster
+alias kdev="kubectl config use-context dev-eks-main-01"
+alias kstg="kubectl config use-context stg-eks-main-01"
+alias kpreprod="kubectl config use-context preprod-eks-main-01"
+alias kprod="kubectl config use-context prod-eks-main-01"
+alias ktrl="kubectl config use-context trial-eks-main-01"
+alias ktrial='ktrl'
+alias ktrail='ktrl'
+alias kcinder="kubectl config use-context dev-eks-cinder-01"
+alias kkubeflow="kubectl config use-context kubeflow"
+alias kgitlab="kubectl config use-context dev-eks-gitlab-01"
+alias kml="kubectl config use-context dev-eks-ml-01"
+
+# TOP related commands
+alias ktop='kubectl top pod --all-namespaces | sort --reverse --key 3 --numeric | head -10'
+
+# Watch specific namespaces for anything out of the ordinary
+alias watchdev='watch '"'"'kubectl --kubeconfig $HOME/.kube/dev-eks-main-01.config -n dev get pods | grep -v 2/2'"'"''
+alias watchqa='watch '"'"'kubectl --kubeconfig $HOME/.kube/dev-eks-main-01.config -n qa get pods | grep -v 2/2'"'"''
+alias watchtrl='watch '"'"'kubectl --kubeconfig $HOME/.kube/trial-eks-main-01.config -n trial get pods | grep -v 2/2'"'"''
+alias watchtrial='watchtrl'
+alias watchtrail='watchtrl'
+alias watchstg='watch '"'"'kubectl --kubeconfig $HOME/.kube/stg-eks-main-01.config  -n stg get pods | grep -v 2/2'"'"''
+alias watchpreprod='watch '"'"'kubectl --kubeconfig $HOME/.kube/preprod-eks-main-01.config -n preprod get pods | grep -v 2/2'"'"''
+alias watchlegion='watch '"'"'docker ps --filter "name=legion-" --format "table {{.Names}}\t{{.RunningFor}}"'"'"''
+alias secretsqa="kubectl --kubeconfig $HOME/.kube/dev-eks-main-01.config -n qa get secret lexi -o json | jq '.data | map_values(@base64d)'"
+alias secretsdev="kubectl --kubeconfig $HOME/.kube/dev-eks-main-01.config -n dev get secret lexi -o json | jq '.data | map_values(@base64d)'"
+alias secretstrl="kubectl --kubeconfig $HOME/.kube/trial-eks-main-01.config -n trial get secret lexi -o json | jq '.data | map_values(@base64d)'"
+alias secretstrial='secretstrl'
+alias secretstrail='secretstrl'
+alias secretsstg="kubectl --kubeconfig $HOME/.kube/stg-eks-main-01.config -n stg get secret lexi -o json | jq '.data | map_values(@base64d)'"
+alias secretspreprod="kubectl --kubeconfig $HOME/.kube/preprod-eks-main-01.config -n preprod get secret lexi -o json | jq '.data | map_values(@base64d)'"
+
+# kubectl namespace specific shortcuts
+alias gitlab="kubectl -n gitlab"
+alias dev="kubectl -n dev"
+alias qa="kubectl -n qa"
+alias trl="kubectl -n trial"
+alias trial='trl'
+alias trail='trl'
+alias stg="kubectl -n stg"
+alias preprod="kubectl -n preprod"
+alias prod="kubectl -n prod"
+alias pc="kubectl -n peacecraft"
+alias cj="kubectl -n cronjobs"
+
+# # Vault specific
+# export VAULT_USER="levi.noecker"
+# export VAULT_ADDR="https://vault.toyotaconnected.net"
+# export VAULT_NAMESPACE=labs
+
+# AWS ECS and Docker Hub Login
+export AWS_ECR_REGION="us-west-2"
+docker-login () {
+        # awscli v2 changed the command used to get an ecr password
+        if [[ "$(aws --version | cut -d'/' -f2 | cut -d'.' -f1)" -eq "2" ]]; then
+                eval $(aws ecr get-login-password --region $AWS_ECR_REGION);
+        else
+                eval $(aws ecr get-login --region $AWS_ECR_REGION --no-include-email);
+        fi
+        docker login -u $(vault kv get -field=dockerid inno/kv/creds/dockerhub) -p $(vault kv get -field=password inno/kv/creds/dockerhub)
+}
+
+# Change to specific directories
+alias cdw="cd $HOME/workspace"
+cdv() {
+  case $1 in
+    1)
+      cd $HOME/workspace/va-lexi
+      ;;
+    *)
+      if [[ -d "$HOME/workspace/va-lexi-$1" ]]; then
+        cd $HOME/workspace/va-lexi-$1
+      else
+        echo "$HOME/workspace/va-lexi-$1 does not exist"
+      fi
+      ;;
+  esac
+}
+
+# export AWS_OKTA_MFA_PROVIDER=OKTA
+# mfa () {
+# 	aws-okta exec labs-va-dev-developer -- aws sts get-caller-identity
+# 	eval $(aws-okta env labs-va-dev-developer)
+# 	aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+# 	aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+# 	aws configure set aws_session_token ${AWS_SESSION_TOKEN}
+# 	unset AWS_SECRET_ACCESS_KEY
+# 	unset AWS_SESSION_TOKEN
+# 	unset AWS_ACCESS_KEY_ID
+# 	unset AWS_SECURITY_TOKEN
+# }
+
+# mfan () {
+# 	aws-okta exec labs-va-dev-developer -- aws sts get-caller-identity
+# 	eval $(aws-okta env labs-va-dev-developer)
+# 	aws configure set aws_secret_access_key ${AWS_SECRET_ACCESS_KEY}
+# 	aws configure set aws_access_key_id ${AWS_ACCESS_KEY_ID}
+# 	aws configure set aws_session_token ${AWS_SESSION_TOKEN}
+# }
+
+export LD_LIBRARY_PATH="/opt/va/wuw:/opt/va/tflite/:/opt/va/drake/:/opt/va/sse/:${LD_LIBRARY_PATH}"
+export LIBRARY_PATH="/opt/va/wuw/:/opt/va/tflite/:/opt/va/drake/:/opt/va/sse/:${LIBRARY_PATH}"
+export PKG_CONFIG_PATH="/opt/pkgconfig:${PKG_CONFIG_PATH}"
+export DYLD_LIBRARY_PATH=/opt/va/tflite:/opt/va/drake
+export AWS_PROFILE=dev
+# export CXXFLAGS="--std=c++17"
+
+mfa() {
+  source ~/p21-embedded-venv/bin/activate
+  /usr/local/bin/mfa
+}

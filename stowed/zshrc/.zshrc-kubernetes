@@ -1,0 +1,15 @@
+alias k="kubectl"
+if command -v kubectl 1>&- ; then
+  source <(k completion zsh)
+fi
+alias mk="minikube"
+if command -v minikube 1>&- ; then
+  source <(minikube completion zsh | sed --expression='s/aliashash\["\([a-z]*\)"\]/aliashash[\1]/g')
+fi
+alias kin="k -n ingress-nginx"
+alias knt="kubectl -n node-noso-test"
+alias wknt="watch kubectl -n node-noso-test get pods"
+alias doks="export KUBECONFIG=~/.kube/do.config"
+
+# DigitalOcean K8s specific
+alias kin="kubectl -n ingress-nginx"

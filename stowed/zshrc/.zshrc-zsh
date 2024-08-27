@@ -1,0 +1,24 @@
+alias vz='vi ~/.zshrc'
+
+export TERM="xterm-256color"
+
+# Reload the .zshrc file by typeing '.' + ENTER
+function _accept-line() {
+    if [[ $BUFFER == "." ]]; then
+        BUFFER="source ~/.zshrc"
+    fi
+    zle .accept-line
+}
+zle -N accept-line _accept-line
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Source relevant zsh dotfiles
+if [ -f "$HOME/.zshrc-tokens" ]; then
+	source $HOME/.zshrc-tokens
+else
+	echo "$HOME/.zshrc-tokens NOT CONFIGURED!!!"
+fi
+
+export PATH="/opt/homebrew/bin:$PATH"

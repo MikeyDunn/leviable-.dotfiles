@@ -1,0 +1,2 @@
+alias watchpool='watch '"'"'echo password leviable5 STATUS | nc pool.noso.dev 8082 | tr " " "\n" | column -t -s ":"  | sort'"'"''
+alias watchpool2='watch '"'"'echo password leviable8 STATUS | nc pool.noso.dev 8082 | tr " " "\n" | column -t -s ":"  | sort'"'"''

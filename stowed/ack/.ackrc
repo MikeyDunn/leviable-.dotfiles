@@ -1,0 +1,10 @@
+--ignore-dir=Packages
+--ignore-dir=vendor
+--ignore-dir=.venv
+--ignore-dir=.terraform
+--ignore-file=is:terraform.tfstate
+--ignore-file=is:terraform.tfstate.backup
+--ignore-file=is:.tags
+--ignore-file=is:.gitignore
+--ignore-file=is:.dockerignore
+

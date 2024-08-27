@@ -1,0 +1,19 @@
+function cn {
+    if [[ "$1" == "" ]] || [[ "$2" == "" ]]; then
+        echo "Must be of form 'cn <section number> <section title>"
+        return 1
+    fi
+
+    cargo new "$1-$2" --name $2 --vcs none
+
+}
+
+# TODO: Make this smarter by examining the last entry to see if it is today's date,
+#       and then add a new bullet point if it is
+# TODO: Add support for checking path to did.txt file
+function did {
+    # -c ":normal ggO$(date)" \  # Go to top of file and write in the date
+    # -c ":normal o" \           # Add a blank line under new date
+    # -c ":normal O - " \        # Add new line with a hyphon between blank line and date
+    vim -c ":normal ggO$(date)" -c ":normal o" -c ":normal O - " $HOME/Dropbox/did.txt
+}

@@ -1,0 +1,23 @@
+function status {
+    systemctl status --no-pager $1
+}
+
+function _doit {
+    sudo systemctl $1 --no-pager $2
+}
+
+function stop {
+    _doit stop $1
+}
+
+function start {
+    _doit start $1
+}
+
+function restart {
+    _doit restart $1
+}
+
+function follow {
+    journalctl -u $1 -f --output cat
+}

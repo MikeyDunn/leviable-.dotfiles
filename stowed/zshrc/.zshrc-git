@@ -1,0 +1,8 @@
+alias gitdate='git commit --amend --date=now --no-edit'
+alias amend='git commit --amend --no-edit'
+alias updatemaster='git fetch origin master:master'
+alias updatemain='git fetch origin main:main'
+alias um='updatemaster'
+alias prunemain='git branch --merged main | grep -v "\* main" | xargs -n 1 git branch -d'
+alias prunemaster='git branch --merged master | grep -v "\* master" | xargs -n 1 git branch -d'
+
