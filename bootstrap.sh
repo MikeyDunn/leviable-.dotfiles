@@ -13,7 +13,8 @@ padding=14
 
 function darwin { [ "$(uname -s)" = "Darwin" ]; }
 function linux { [ "$(uname -s)" = "Linux" ]; }
-function checking() { echo -en "\r\033[K$program: ${YELLOW}Checking${NC}"; }
+
+function checking() { echo -en "\r\033[K$(printf %-${padding}s """$program"""): ${YELLOW}Checking${NC}"; }
 function installing() { echo -en "\r\033[K$(printf %-${padding}s """$program"""): ${YELLOW}Installing${NC}"; }
 function installed() { echo -e "\r\033[K$(printf %-${padding}s """$program"""): ${GREEN}Installed${NC}"; }
 function updating() { echo -en "\r\033[K$(printf %-${padding}s """$program"""): ${YELLOW}Updating${NC}"; }
@@ -48,7 +49,7 @@ function backup() {
   file="${1##*/}"
   backupdir="$base/dotfiles-backup"
   mkdir -p $backupdir
-  cp "$1" "$backupdir/$file"-backup-"$(date +%s)" && rm "$1"
+  cp "$1" "$backupdir"/"$file"-backup-"$(date +%s)" && rm "$1"
 }
 
 # ###############################
@@ -66,7 +67,7 @@ sudo ls &>/dev/null
 #
 # ###############################
 
-mkdir -p "$HOME"/.config
+mkdir -p "$HOME/.config"
 
 # ###############################
 #
@@ -74,13 +75,13 @@ mkdir -p "$HOME"/.config
 #
 # ###############################
 
-program="Typing Speed"
+program="typing speed"
 if darwin; then
   {
     updating
-    defaults write NSGlobalDomain InitialKeyRepeat -int 20 &&
-      defaults write NSGlobalDomain KeyRepeat -int 2 &&
-      updated
+    defaults write NSGlobalDomain InitialKeyRepeat -int 20
+    defaults write NSGlobalDomain KeyRepeat -int 2
+    updated
   } || {
     failed
   }
@@ -92,7 +93,8 @@ fi
 #
 # ###############################
 
-program="Homebrew"
+program="homebrew"
+homebrew_url="https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
 if darwin; then
   checking
   if command -v brew &>/dev/null; then
@@ -100,13 +102,13 @@ if darwin; then
   else
     installing
     {
-      NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" >>"$INSTALL_LOG" 2>&1 &&
-        (
-          echo
-          echo 'eval "$(/opt/homebrew/bin/brew shellenv)"'
-        ) >>/Users/levi/.zprofile &&
-        eval "$(/opt/homebrew/bin/brew shellenv)" &&
-        installed
+      NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL "$homebrew_url")" >>"$INSTALL_LOG" 2>&1
+      (
+        echo
+        echo 'eval "$(/opt/homebrew/bin/brew shellenv)"'
+      ) >>/Users/levi/.zprofile
+      eval "$(/opt/homebrew/bin/brew shellenv)"
+      installed
     } || {
       failed
     }
@@ -119,12 +121,12 @@ fi
 #
 # ###############################
 
-program="Apt"
+program="apt"
 if linux; then
   updating
   {
-    sudo apt update >>"$INSTALL_LOG" 2>&1 &&
-      updated
+    sudo apt update >>"$INSTALL_LOG" 2>&1
+    updated
   } || {
     failed
   }
@@ -136,7 +138,7 @@ fi
 #
 # ###############################
 
-program="Curl" install curl
+program="curl" install curl
 
 # ###############################
 #
@@ -144,7 +146,7 @@ program="Curl" install curl
 #
 # ###############################
 
-program="Make" install make
+program="make" install make
 
 # ###############################
 #
@@ -152,7 +154,7 @@ program="Make" install make
 #
 # ###############################
 
-program="GNU Stow" install stow
+program="gnu stow" install stow
 
 # ###############################
 #
@@ -160,9 +162,37 @@ program="GNU Stow" install stow
 #
 # ###############################
 
-program="Ack" install ack
-[[ ! -f $HOME/.ackrc ]] || backup "$HOME"/.ackrc
+program="ack" install ack
+[[ ! -f "$HOME/.ackrc" ]] || backup "$HOME/.ackrc"
 stow -d "$STOWED" -t "$HOME" ack
+
+# ###############################
+#
+# ripgrep
+#
+# ###############################
+
+program="ripgrep" install ripgrep
+
+# ###############################
+#
+# luarocks
+#
+# ###############################
+
+program="luarocks" install luarocks
+
+# ###############################
+#
+# fd-find
+#
+# ###############################
+
+if darwin; then
+  program="fd-find" install fd
+else
+  program="fd-find" install fd-find
+fi
 
 # ###############################
 #
@@ -170,7 +200,7 @@ stow -d "$STOWED" -t "$HOME" ack
 #
 # ###############################
 
-program="Htop" install htop
+program="htop" install htop
 
 # ###############################
 #
@@ -179,7 +209,7 @@ program="Htop" install htop
 # ###############################
 
 # This will work with Ubuntu 20.10+
-program="Eza" install eza
+program="eza" install eza
 
 # ###############################
 #
@@ -195,7 +225,7 @@ program="fzf" install fzf
 #
 # ###############################
 
-program="Bat" install bat
+program="bat" install bat
 
 # ###############################
 #
@@ -203,9 +233,9 @@ program="Bat" install bat
 #
 # ###############################
 
-program="Git" install git
-[[ ! -f $HOME/.gitconfig ]] || backup "$HOME"/.gitconfig
-[[ ! -f $HOME/.gitignore_global ]] || backup "$HOME"/.gitignore_global
+program="git" install git
+[[ ! -f "$HOME/.gitconfig" ]] || backup "$HOME/.gitconfig"
+[[ ! -f "$HOME/.gitignore_global" ]] || backup "$HOME/.gitignore_global"
 stow -d "$STOWED" -t "$HOME" git
 
 # ###############################
@@ -214,7 +244,7 @@ stow -d "$STOWED" -t "$HOME" git
 #
 # ###############################
 
-program="Git GUI" install git-gui
+program="git gui" install git-gui
 
 # ###############################
 #
@@ -222,7 +252,7 @@ program="Git GUI" install git-gui
 #
 # ###############################
 
-program="Git Delta" install git-delta
+program="git delta" install git-delta
 
 # ###############################
 #
@@ -238,7 +268,7 @@ program="entr" install entr
 #
 # ###############################
 
-program="Zsh" install zsh
+program="zsh" install zsh
 
 # ###############################
 #
@@ -246,22 +276,23 @@ program="Zsh" install zsh
 #
 # ###############################
 
-program="Oh My Zsh"
+program="oh my zsh"
+omz_url="https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh"
 checking
 if [ ! -d "$HOME/.oh-my-zsh" ]; then
   installing
   {
-    yes | sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" >>"$INSTALL_LOG" 2>&1 &&
-      installed
+    yes | sh -c "$(curl -fsSL "$omz_url")" >>"$INSTALL_LOG" 2>&1
+    installed
   } || { failed; }
 else
   installed
 fi
 
-# Set default shell to zsh
-[[ ! $(uname -s) = "Linux" ]] || chsh -s $(which zsh)
+# For ubuntu, set default shell to zsh
+# [[ ! "$(uname -s)" = "Linux" ]] || chsh -s "$(which zsh)"
 
-[[ ! -f $HOME/.zshrc ]] || backup "$HOME"/.zshrc
+[[ ! -f "$HOME/.zshrc" ]] || backup "$HOME/.zshrc"
 stow -d "$STOWED" -t "$HOME" zshrc
 
 # ###############################
@@ -275,6 +306,21 @@ touch ~/.zshrc-tokens
 
 # ###############################
 #
+# Python
+#
+# ###############################
+
+program="python" install python
+
+if darwin; then
+  pip3 install neovim --break-system-packages >>"$INSTALL_LOG" 2>&1
+else
+  DEBIAN_FRONTEND=noninteractiv sudo apt install -y pip >>"$INSTALL_LOG" 2>&1
+  pip install neovim --break-system-packages >>"$INSTALL_LOG" 2>&1
+fi
+
+# ###############################
+#
 # npm
 #
 # ###############################
@@ -283,19 +329,11 @@ program="npm" install npm
 
 # ###############################
 #
-# Python
-#
-# ###############################
-
-program="Python" install python3
-
-# ###############################
-#
 # Go
 #
 # ###############################
 
-program="Go" install golang
+program="go" install golang
 
 # ###############################
 #
@@ -327,13 +365,11 @@ program="rustup"
 checking
 if command -v rustup &>/dev/null; then
   installed
-elif [[ "$SKIP" =~ .*"rust".* ]]; then
-  skipping
 else
   installing
   {
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh /dev/stdin -y >>"$INSTALL_LOG" 2>&1 &&
-      installed
+    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh /dev/stdin -y >>"$INSTALL_LOG" 2>&1
+    installed
   } || { failed; }
 fi
 
@@ -347,7 +383,7 @@ fi
 # Even though we plan to use nvim, this is needed
 #   for vim-go to work correctly
 program="vim" install vim
-[[ ! -f $HOME/.vimrc ]] || backup "$HOME"/.vimrc
+[[ ! -f "$HOME/.vimrc" ]] || backup "$HOME/.vimrc"
 
 # ###############################
 #
@@ -360,9 +396,9 @@ if darwin; then
 else
   sudo snap install --beta nvim --classic >>"$INSTALL_LOG" 2>&1
 fi
-[[ ! -f $HOME/.config/nvim/init.vim ]] || backup "$HOME"/.config/nvim/init.vim
-mkdir -p "$HOME"/.config/nvim
-stow -d "$STOWED" -t "$HOME"/.config/nvim neovim
+[[ ! -f "$HOME/.config/nvim/init.vim" ]] || backup "$HOME/.config/nvim/init.vim"
+mkdir -p "$HOME/.config/nvim"
+stow -d "$STOWED" -t "$HOME/.config/nvim" neovim
 
 # ###############################
 #
@@ -419,9 +455,9 @@ if command -v starship &>/dev/null; then
 else
   installing
   {
-    mkdir -p $HOME/.local/bin
-    curl -sS https://starship.rs/install.sh | sh /dev/stdin -y -b $HOME/.local/bin >>"$INSTALL_LOG" 2>&1 &&
-      installed
+    mkdir -p "$HOME/.local/bin"
+    curl -sS https://starship.rs/install.sh | sh /dev/stdin -y -b "$HOME/.local/bin" >>"$INSTALL_LOG" 2>&1
+    installed
   } || { failed; }
 fi
 
@@ -431,11 +467,11 @@ fi
 #
 # ###############################
 
-program="Nerd Fonts"
+program="nerd fonts"
 nerd_font_url="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.tar.xz"
 if darwin; then
   font_dir="$HOME/Library/Fonts"
-  tar_args="-xz -"
+  tar_args="-xz"
 else
   font_dir="$HOME/.local/share/fonts"
   tar_args="xJ"
@@ -447,8 +483,8 @@ if ls "$font_dir/FiraCode*" &>/dev/null; then
 else
   installing
   {
-    curl -s -L $nerd_font_url | tar $tar_args -C $font_dir &&
-      installed
+    curl -s -L "$nerd_font_url" | tar "$tar_args" -C "$font_dir"
+    installed
   } || {
     failed
   }
