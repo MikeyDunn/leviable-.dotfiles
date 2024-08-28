@@ -268,7 +268,7 @@ fi
 #
 # ###############################
 
-program="Python" install python
+program="Python" install python3
 
 # ###############################
 #
@@ -276,7 +276,7 @@ program="Python" install python
 #
 # ###############################
 
-program="Go" install go
+program="Go" install golang
 
 # ###############################
 #
