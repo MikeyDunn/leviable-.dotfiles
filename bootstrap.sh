@@ -290,7 +290,7 @@ else
 fi
 
 # For ubuntu, set default shell to zsh
-# [[ ! "$(uname -s)" = "Linux" ]] || chsh -s "$(which zsh)"
+[[ ! "$(uname -s)" = "Linux" ]] || chsh -s "$(which zsh)"
 
 [[ ! -f "$HOME/.zshrc" ]] || backup "$HOME/.zshrc"
 stow -d "$STOWED" -t "$HOME" zshrc
@@ -310,7 +310,7 @@ touch ~/.zshrc-tokens
 #
 # ###############################
 
-program="python" install python
+program="python" install python3
 
 if darwin; then
   pip3 install neovim --break-system-packages >>"$INSTALL_LOG" 2>&1
