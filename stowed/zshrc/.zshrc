@@ -81,6 +81,7 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 source $HOME/.zshrc-ack
+source $HOME/.zshrc-bat
 source $HOME/.zshrc-bazel
 source $HOME/.zshrc-docker
 source $HOME/.zshrc-eza

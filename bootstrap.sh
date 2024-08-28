@@ -70,6 +70,24 @@ mkdir -p "$HOME"/.config
 
 # ###############################
 #
+# macOs Typing Speed
+#
+# ###############################
+
+program="Typing Speed"
+if darwin; then
+  {
+    updating
+    defaults write NSGlobalDomain InitialKeyRepeat -int 20 &&
+      defaults write NSGlobalDomain KeyRepeat -int 2 &&
+      updated
+  } || {
+    failed
+  }
+fi
+
+# ###############################
+#
 # Homebrew
 #
 # ###############################
@@ -119,6 +137,14 @@ fi
 # ###############################
 
 program="Curl" install curl
+
+# ###############################
+#
+# gnu make
+#
+# ###############################
+
+program="Make" install make
 
 # ###############################
 #
@@ -232,6 +258,9 @@ else
   installed
 fi
 
+# Set default shell to zsh
+[[ ! $(uname -s) = "Linux" ]] || chsh -s $(which zsh)
+
 [[ ! -f $HOME/.zshrc ]] || backup "$HOME"/.zshrc
 stow -d "$STOWED" -t "$HOME" zshrc
 
@@ -246,21 +275,11 @@ touch ~/.zshrc-tokens
 
 # ###############################
 #
-# macOs Typing Speed
+# npm
 #
 # ###############################
 
-program="Typing Speed"
-if darwin; then
-  {
-    updating
-    defaults write NSGlobalDomain InitialKeyRepeat -int 20 &&
-      defaults write NSGlobalDomain KeyRepeat -int 2 &&
-      updated
-  } || {
-    failed
-  }
-fi
+program="npm" install npm
 
 # ###############################
 #
@@ -327,7 +346,7 @@ fi
 # Update the system VIM.
 # Even though we plan to use nvim, this is needed
 #   for vim-go to work correctly
-program="VIM" install vim
+program="vim" install vim
 [[ ! -f $HOME/.vimrc ]] || backup "$HOME"/.vimrc
 
 # ###############################
@@ -336,7 +355,11 @@ program="VIM" install vim
 #
 # ###############################
 
-program="neovim" install neovim
+if darwin; then
+  program="neovim" install neovim
+else
+  sudo snap install --beta nvim --classic >>"$INSTALL_LOG" 2>&1
+fi
 [[ ! -f $HOME/.config/nvim/init.vim ]] || backup "$HOME"/.config/nvim/init.vim
 mkdir -p "$HOME"/.config/nvim
 stow -d "$STOWED" -t "$HOME"/.config/nvim neovim
@@ -347,7 +370,41 @@ stow -d "$STOWED" -t "$HOME"/.config/nvim neovim
 #
 # ###############################
 
-program="warp" install warp
+if darwin; then
+  checking
+  if brew list warp &>/dev/null; then
+    installed
+  else
+    installing
+    {
+      program="warp" install warp
+      installed
+    } || {
+      failed
+    }
+  fi
+else
+  checking
+  if apt show warp-terminal &>/dev/null; then
+    installed
+  else
+    installing
+    {
+      (
+        sudo apt-get install wget gpg
+        wget -qO- https://releases.warp.dev/linux/keys/warp.asc | gpg --dearmor >warpdotdev.gpg
+        sudo install -D -o root -g root -m 644 warpdotdev.gpg /etc/apt/keyrings/warpdotdev.gpg
+        sudo sh -c 'echo "deb [arch=arm64 signed-by=/etc/apt/keyrings/warpdotdev.gpg] https://releases.warp.dev/linux/deb stable main" > /etc/apt/sources.list.d/warpdotdev.list'
+        rm warpdotdev.gpg
+        sudo apt update
+      ) >>"$INSTALL_LOG" 2>&1
+      program="warp" install warp-terminal
+      installed
+    } || {
+      failed
+    }
+  fi
+fi
 
 # ###############################
 #
@@ -375,10 +432,13 @@ fi
 # ###############################
 
 program="Nerd Fonts"
+nerd_font_url="https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.tar.xz"
 if darwin; then
   font_dir="$HOME/Library/Fonts"
+  tar_args="-xz -"
 else
   font_dir="$HOME/.local/share/fonts"
+  tar_args="xJ"
   mkdir -p "$font_dir"
 fi
 
@@ -387,7 +447,7 @@ if ls "$font_dir/FiraCode*" &>/dev/null; then
 else
   installing
   {
-    curl -s -L https://github.com/ryanoasis/nerd-fonts/releases/latest/download/FiraCode.tar.xz | tar xz - -C $font_dir &&
+    curl -s -L $nerd_font_url | tar $tar_args -C $font_dir &&
       installed
   } || {
     failed
