@@ -1,1 +1,1 @@
-[[ ! $(uname -s) = "Linux" ]] || alias bat="batcat"
+alias bat="batcat"
