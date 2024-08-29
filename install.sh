@@ -1,6 +1,6 @@
 #!/bin/bash
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+SCRIPT_DIR="$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)"
 STOWED="$SCRIPT_DIR/stowed"
 INSTALL_LOG="$SCRIPT_DIR/install.log"
 
@@ -226,6 +226,7 @@ program="fzf" install fzf
 # ###############################
 
 program="bat" install bat
+# [[ ! "$(uname -s)" = "Linux" ]] || alias
 
 # ###############################
 #
@@ -394,8 +395,21 @@ program="vim" install vim
 if darwin; then
   program="neovim" install neovim
 else
-  sudo snap install --beta nvim --classic >>"$INSTALL_LOG" 2>&1
+  # Need nvim > 10.0 - Easiest way to get it is snap
+  checking
+  if command -v nvim &>/dev/null; then
+    installed
+  else
+    installing
+    {
+      sudo snap install --beta nvim --classic >>"$INSTALL_LOG" 2>&1
+      installed
+    } || {
+      failed
+    }
+  fi
 fi
+
 [[ ! -f "$HOME/.config/nvim/init.vim" ]] || backup "$HOME/.config/nvim/init.vim"
 mkdir -p "$HOME/.config/nvim"
 stow -d "$STOWED" -t "$HOME/.config/nvim" neovim
@@ -408,6 +422,7 @@ stow -d "$STOWED" -t "$HOME/.config/nvim" neovim
 
 if darwin; then
   checking
+  # warp doesn't have a command line launcher, so need to get creative
   if brew list warp &>/dev/null; then
     installed
   else
